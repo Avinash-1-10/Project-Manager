@@ -1,5 +1,6 @@
 import React from "react";
 import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
 
 const Layout = ({ children }) => {
   return (
@@ -7,7 +8,10 @@ const Layout = ({ children }) => {
       <div>
         <Sidebar />
       </div>
-      <div style={{ flex: 1 }}>{children}</div>
+      <div className="flex-1 overflow-y-scroll">
+        <Navbar />
+        {children}
+      </div>
     </div>
   );
 };
