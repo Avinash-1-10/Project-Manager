@@ -7,3 +7,8 @@
 .logoFont{
     font-family: "Caveat", cursive;
 }
+
+.active{
+    background-color: white;
+    color: #1D232A;
+}

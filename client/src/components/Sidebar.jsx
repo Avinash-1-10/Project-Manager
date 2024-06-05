@@ -8,6 +8,7 @@ import { IoLogOut } from "react-icons/io5";
 import { PiCardsFill } from "react-icons/pi";
 import { IoMdAdd } from "react-icons/io";
 import Logo from "./Logo";
+import { NavLink, useLocation } from "react-router-dom"; // Import useLocation
 
 const Sidebar = () => {
   const menus = [
@@ -15,6 +16,11 @@ const Sidebar = () => {
       name: "Home",
       path: "/",
       icon: GoHomeFill,
+    },
+    {
+      name: "Create",
+      path: "/create",
+      icon: IoMdAdd,
     },
     {
       name: "Projects",
@@ -47,21 +53,23 @@ const Sidebar = () => {
       icon: IoLogOut,
     },
   ];
+
+  const location = useLocation(); // Get the current location
+
   return (
     <div className="flex flex-col gap-5 border-r border-r-gray-600 px-5 py-5 w-56 h-screen shadow-md">
       <Logo />
-      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 hover:text-gray-700 cursor-pointer transition-all duration-200">
-        <IoMdAdd />
-        <p>Create</p>
-      </div>
       {menus.map((menu, index) => (
-        <div
+        <NavLink
           key={index}
-          className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 hover:text-gray-700 cursor-pointer transition-all duration-200"
+          to={menu.path}
+          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 hover:text-gray-700 cursor-pointer transition-all duration-200 ${
+            location.pathname === menu.path ? "bg-blue-500 text-white" : "" // Apply active styles
+          }`}
         >
           <menu.icon className="text-lg" />
           <span>{menu.name}</span>
-        </div>
+        </NavLink>
       ))}
     </div>
   );
