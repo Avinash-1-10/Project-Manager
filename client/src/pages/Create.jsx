@@ -1,9 +1,15 @@
-import React from 'react'
+import React from "react";
+import Layout from "../Layout";
+import ProjectCreateForm from "../components/ProjectCreateForm";
 
 const Create = () => {
   return (
-    <div>Create</div>
-  )
-}
+    <Layout>
+      <div className="pr-5">
+        <ProjectCreateForm />
+      </div>
+    </Layout>
+  );
+};
 
-export default Create
+export default Create;
