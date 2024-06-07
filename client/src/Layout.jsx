@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
       <div>
         <Sidebar />
       </div>
-      <div className="flex-1 overflow-y-scroll">
+      <div className="flex-1 overflow-y-scroll h-screen">
         <Navbar />
         {children}
       </div>
