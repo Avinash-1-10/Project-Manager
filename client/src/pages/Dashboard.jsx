@@ -79,7 +79,9 @@ const Dashboard = () => {
               <Bar data={barData} />
             </div>
             <div className="border border-gray-700 p-4 rounded-lg shadow-md mt-auto">
-              <h2 className="text-xl font-bold mb-4">Team Member Contributions</h2>
+              <h2 className="text-xl font-bold mb-4">
+                Team Member Contributions
+              </h2>
               <Bar data={teamData} />
             </div>
           </div>

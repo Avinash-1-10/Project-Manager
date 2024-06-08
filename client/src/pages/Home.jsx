@@ -56,15 +56,15 @@ const Home = () => {
       {
         label: "Total Days",
         data: totalDays,
-        backgroundColor: "rgba(66, 108, 208, 0.5)", // Light blue
-        borderColor: "rgb(66, 109, 208)", // Blue
+        backgroundColor: "#3B82F6", // Light blue
+        borderColor: "white", // Blue
         borderWidth: 1,
       },
       {
         label: "Remaining Days",
         data: remainingDays,
-        backgroundColor: "rgba(255, 159, 64, 0.5)", // Light orange
-        borderColor: "rgba(255, 159, 64, 1)", // Orange
+        backgroundColor: "#10B981", // Light orange
+        borderColor: "white", // Orange
         borderWidth: 1,
       },
     ],
