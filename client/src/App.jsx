@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Members from "./pages/Members";
 import Activities from "./pages/Activities";
 import Profile from "./pages/Profile";
+import Project from "./pages/Project";
 
 const App = () => {
   return (
@@ -18,7 +19,8 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/members" element={<Members />} />
         <Route path="/activity" element={<Activities />} />
-        <Route path="/profile" element={<Profile/>} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/project/:id" element={<Project />} />
       </Routes>
     </BrowserRouter>
   );
