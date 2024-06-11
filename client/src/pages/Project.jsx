@@ -138,11 +138,6 @@ const ProjectPage = () => {
               <Bar data={progressChartData} />
             </div>
           </div>
-
-          <div className="border border-gray-500 p-4 rounded-lg shadow mb-6">
-            <h2 className="text-2xl font-bold mb-4">Task Distribution</h2>
-            <Pie data={taskDistributionChartData} />
-          </div>
         </div>
       </div>
     </Layout>
