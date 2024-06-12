@@ -1,10 +1,13 @@
 import express from "express";
-import dotenv from "dotenv";
+import {configDotenv} from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import connectDB from "./config/db.js";
+import userRoutes from "./routes/userRoutes.js";
 
-dotenv.config();
+configDotenv();
+connectDB()
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -16,6 +19,8 @@ app.use(helmet());
 app.use(morgan("tiny"));
 
 // Routes
+
+app.use("/api/users", userRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
