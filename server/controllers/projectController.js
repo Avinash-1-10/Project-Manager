@@ -52,3 +52,20 @@ export const updateProject = async (req, res) => {
     return res.status(500).json(new ApiError(500, error.message));
   }
 }
+
+
+export const addMemberToProject = async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    if (!project) {
+      return res.status(404).json(new ApiError(404, "Project not found"));
+    }
+    project.members.push(req.body.memberId);
+    await project.save();
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Member added to project successfully", project));
+  } catch (error) {
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+}
