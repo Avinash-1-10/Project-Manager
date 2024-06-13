@@ -31,3 +31,24 @@ export const getProjectById = async (req, res) => {
     return res.status(500).json(new ApiError(500, error.message));
   }
 };
+
+
+export const updateProject = async (req, res) => {
+  try {
+    const { name, description, startDate, dueDate } = req.body;
+    const project = await Project.findById(req.params.id);
+    if (!project) {
+      return res.status(404).json(new ApiError(404, "Project not found"));
+    }
+    project.name = name;
+    project.description = description;
+    project.startDate = startDate;
+    project.dueDate = dueDate;
+    await project.save();
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Project updated successfully", project));
+  } catch (error) {
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+}
