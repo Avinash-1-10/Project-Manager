@@ -85,3 +85,19 @@ export const removeMemberFromProject = async (req, res) => {
     return res.status(500).json(new ApiError(500, error.message));
   }
 }
+
+
+export const deleteProject = async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    if (!project) {
+      return res.status(404).json(new ApiError(404, "Project not found"));
+    }
+    await project.remove();
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Project deleted successfully", project));
+  } catch (error) {
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+}
