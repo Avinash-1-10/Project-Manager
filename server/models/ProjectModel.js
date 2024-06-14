@@ -1,5 +1,21 @@
 import mongoose from "mongoose";
 
+const memberSchema = new mongoose.Schema(
+  {
+    memberId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ["member", "admin"],
+      default: "member",
+    },
+  },
+  { _id: false }
+);
+
 const projectSchema = new mongoose.Schema(
   {
     name: {
@@ -18,12 +34,7 @@ const projectSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    members: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    members: [memberSchema],
   },
   { timestamps: true }
 );
