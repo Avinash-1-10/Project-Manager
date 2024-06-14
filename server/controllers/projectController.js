@@ -32,7 +32,6 @@ export const getProjectById = async (req, res) => {
   }
 };
 
-
 export const updateProject = async (req, res) => {
   try {
     const { name, description, startDate, dueDate } = req.body;
@@ -51,8 +50,7 @@ export const updateProject = async (req, res) => {
   } catch (error) {
     return res.status(500).json(new ApiError(500, error.message));
   }
-}
-
+};
 
 export const addMemberToProject = async (req, res) => {
   try {
@@ -64,11 +62,13 @@ export const addMemberToProject = async (req, res) => {
     await project.save();
     return res
       .status(200)
-      .json(new ApiResponse(200, "Member added to project successfully", project));
+      .json(
+        new ApiResponse(200, "Member added to project successfully", project)
+      );
   } catch (error) {
     return res.status(500).json(new ApiError(500, error.message));
   }
-}
+};
 
 export const removeMemberFromProject = async (req, res) => {
   try {
@@ -76,16 +76,23 @@ export const removeMemberFromProject = async (req, res) => {
     if (!project) {
       return res.status(404).json(new ApiError(404, "Project not found"));
     }
-    project.members = project.members.filter(member => member.toString() !== req.body.memberId);
+    project.members = project.members.filter(
+      (member) => member.toString() !== req.body.memberId
+    );
     await project.save();
     return res
       .status(200)
-      .json(new ApiResponse(200, "Member removed from project successfully", project));
+      .json(
+        new ApiResponse(
+          200,
+          "Member removed from project successfully",
+          project
+        )
+      );
   } catch (error) {
     return res.status(500).json(new ApiError(500, error.message));
   }
-}
-
+};
 
 export const deleteProject = async (req, res) => {
   try {
@@ -100,4 +107,4 @@ export const deleteProject = async (req, res) => {
   } catch (error) {
     return res.status(500).json(new ApiError(500, error.message));
   }
-}
+};
