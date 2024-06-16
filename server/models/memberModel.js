@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const memberSchema = new mongoose.Schema(
   {
-    user: {
+    member: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -14,7 +14,6 @@ const memberSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      required: true,
     },
   },
   { timestamps: true }
