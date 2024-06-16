@@ -1,6 +1,6 @@
 import Member from "../models/memberModel";
 import Project from "../models/ProjectModel";
-import { ApiError } from "../utils/ApiError";
+import { ApiError } from "../utils/customError";
 import { ApiResponse } from "../utils/ApiResponse";
 
 export const createProject = async (req, res) => {
