@@ -21,61 +21,45 @@ export const createUser = asyncHanlder(async (req, res, next) => {
 });
 
 // Controller function to get all users
-export const getUsers = async (req, res, next) => {
-  try {
-    const users = await User.find(); // Fetching all users from the database
+export const getUsers = asyncHanlder(async (req, res, next) => {
+  const users = await User.find(); // Fetching all users from the database
 
-    if (!users) {
-      return next(new CustomError("No users found", 404));
-    }
-
-    // Return success response with the list of users
-    return res
-      .status(200)
-      .json(new ApiResponse(200, "Users fetched successfully", users));
-  } catch (error) {
-    // Return error response if any exception occurs
-    return next(error);
+  if (!users) {
+    return next(new CustomError("No users found", 404));
   }
-};
+
+  // Return success response with the list of users
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Users fetched successfully", users));
+});
 
 // Controller function to get a user by ID
-export const getUserById = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.id); // Fetching a user by ID from the database
+export const getUserById = asyncHanlder(async (req, res, next) => {
+  const user = await User.findById(req.params.id); // Fetching a user by ID from the database
 
-    if (!user) {
-      return next(new CustomError("User not found", 404));
-    }
-
-    // Return success response with the user data
-    return res
-      .status(200)
-      .json(new ApiResponse(200, "User fetched successfully", user));
-  } catch (error) {
-    // Return error response if any exception occurs
-    return next(error);
+  if (!user) {
+    return next(new CustomError("User not found", 404));
   }
-};
+
+  // Return success response with the user data
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "User fetched successfully", user));
+});
 
 // Controller function to get a user by query parameters (username, email, or ID)
-export const getUserByQuery = async (req, res, next) => {
-  try {
-    const { username, email, id } = req.query; // Destructuring the query parameters
+export const getUserByQuery = asyncHanlder(async (req, res, next) => {
+  const { username, email, id } = req.query; // Destructuring the query parameters
+  // Finding a user matching any of the provided query parameters
+  const user = await User.findOne({ $or: [{ username }, { email }, { id }] });
 
-    // Finding a user matching any of the provided query parameters
-    const user = await User.findOne({ $or: [{ username }, { email }, { id }] });
-
-    if (!user) {
-      return next(new CustomError("User not found", 404));
-    }
-
-    // Return success response with the user data
-    return res
-      .status(200)
-      .json(new ApiResponse(200, "User fetched successfully", user));
-  } catch (error) {
-    // Return error response if any exception occurs
-    return next(error);
+  if (!user) {
+    return next(new CustomError("User not found", 404));
   }
-};
+
+  // Return success response with the user data
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "User fetched successfully", user));
+});
