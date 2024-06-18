@@ -8,12 +8,14 @@ import Members from "./pages/Members";
 import Activities from "./pages/Activities";
 import Profile from "./pages/Profile";
 import Project from "./pages/Project";
+import Login from "./pages/Login";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/create" element={<Create />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/dashboard" element={<Dashboard />} />
