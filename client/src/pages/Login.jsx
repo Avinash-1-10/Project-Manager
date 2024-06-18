@@ -1,7 +1,7 @@
 import React from 'react';
 import { FcGoogle } from 'react-icons/fc'; // Google icon
 
-const LoginPage = () => {
+const Login = () => {
   return (
     <div className="flex items-center justify-center min-h-screen ">
       <div className="w-full max-w-md p-8 space-y-6 border border-gray-600 rounded-lg shadow-md">
@@ -45,4 +45,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

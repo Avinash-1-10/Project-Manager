@@ -9,6 +9,7 @@ import Activities from "./pages/Activities";
 import Profile from "./pages/Profile";
 import Project from "./pages/Project";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/create" element={<Create />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/dashboard" element={<Dashboard />} />
