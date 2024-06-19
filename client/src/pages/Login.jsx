@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 // Custom validation schema
 const schema = yup.object().shape({
@@ -27,6 +27,7 @@ const Login = () => {
   });
 
   const onSubmit = async (data) => {
+    console.log(backendUrl)
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, data);
       if (response.status === 200) {
