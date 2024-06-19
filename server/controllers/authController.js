@@ -1,4 +1,6 @@
 import asyncHanlder from "../utils/asyncHanlder";
+import generateToken from "../utils/generateToken";
+import setCookies from "../utils/setCookies";
 
 export const login = asyncHanlder(async (req, res) => {
     const {emailOrUsername, password} = req.body;
@@ -13,5 +15,11 @@ export const login = asyncHanlder(async (req, res) => {
     if(!isMatch) {
         return res.status(401).json({error: "Invalid credentials"});
     }
+    // Generate JWT token
+    const token = await generateToken(existingUser._id);
+
+    // set cookies
+    setCookies(res, token);
+
     return res.status(200).json({message: "Login successful"});
 })
