@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Custom validation schema
 const schema = yup.object().shape({
@@ -37,10 +37,7 @@ const Login = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${backendUrl}/auth/login`,
-        data
-      );
+      const response = await axios.post(`${BACKEND_URL}/auth/login`, data);
       if (response.status === 200) {
         navigate("/");
       }
@@ -86,7 +83,11 @@ const Login = () => {
             )}
           </div>
           <div className="form-control">
-            <button type="submit" className="btn btn-primary w-full" disabled={loading}>
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={loading}
+            >
               {loading ? (
                 <span className="loading loading-infinity loading-lg"></span>
               ) : (

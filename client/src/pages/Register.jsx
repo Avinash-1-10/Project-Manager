@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 import axios from "axios";
 
 // Validation schema
@@ -57,7 +57,7 @@ const Register = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post(`${backendUrl}/users`, data);
+      const response = await axios.post(`${BACKEND_URL}/users`, data);
       if (response.status === 201) {
         navigate("/login");
       }
