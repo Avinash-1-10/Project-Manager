@@ -2,17 +2,35 @@ import User from "../models/userModel.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import asyncHanlder from "../utils/asyncHanlder.js";
 import { CustomError } from "../utils/customError.js";
+import bcrypt from "bcryptjs";
 
 // Controller function to create a new user
 export const createUser = asyncHanlder(async (req, res, next) => {
-  const { name, username, email, password } = req.body; // Destructuring the request body to get user details
+  const { firstName, lastName, username, email, password } = req.body; // Destructuring the request body to get user details
 
   // Check if all required fields are provided
-  if (!name || !username || !email || !password) {
+  if (!firstName || !lastName || !username || !email || !password) {
     return next(new CustomError("All fields are required", 400)); // Return error if any field is missing
   }
 
-  const user = await User.create({ name, username, email, password }); // Creating a new user in the database
+  // Check if the user already exists with the same email or username
+  const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+  if (existingUser) {
+    return next(new CustomError("User already exists", 409)); // Return error if user already exists
+  }
+  
+  // hashing the password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  // Creating a new user in the database
+  const user = await User.create({
+    firstName,
+    lastName,
+    username,
+    email,
+    password:hashedPassword,
+  });
 
   // Return success response with the created user data
   return res
