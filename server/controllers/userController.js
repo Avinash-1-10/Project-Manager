@@ -1,11 +1,11 @@
 import User from "../models/userModel.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import asyncHanlder from "../utils/asyncHanlder.js";
+import asyncHandler from "../utils/asyncHandler.js";
 import { CustomError } from "../utils/customError.js";
 import bcrypt from "bcryptjs";
 
 // Controller function to create a new user
-export const createUser = asyncHanlder(async (req, res, next) => {
+export const createUser = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, username, email, password } = req.body; // Destructuring the request body to get user details
 
   // Check if all required fields are provided
@@ -39,7 +39,7 @@ export const createUser = asyncHanlder(async (req, res, next) => {
 });
 
 // Controller function to get all users
-export const getUsers = asyncHanlder(async (req, res, next) => {
+export const getUsers = asyncHandler(async (req, res, next) => {
   const users = await User.find(); // Fetching all users from the database
 
   if (!users) {
@@ -53,7 +53,7 @@ export const getUsers = asyncHanlder(async (req, res, next) => {
 });
 
 // Controller function to get a user by ID
-export const getUserById = asyncHanlder(async (req, res, next) => {
+export const getUserById = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.params.id); // Fetching a user by ID from the database
 
   if (!user) {
@@ -67,7 +67,7 @@ export const getUserById = asyncHanlder(async (req, res, next) => {
 });
 
 // Controller function to get a user by query parameters (username, email, or ID)
-export const getUserByQuery = asyncHanlder(async (req, res, next) => {
+export const getUserByQuery = asyncHandler(async (req, res, next) => {
   const { username, email, id } = req.query; // Destructuring the query parameters
   // Finding a user matching any of the provided query parameters
   const user = await User.findOne({ $or: [{ username }, { email }, { id }] });

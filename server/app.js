@@ -1,15 +1,15 @@
 import express from "express";
-import {configDotenv} from "dotenv";
+import { configDotenv } from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import errorHandler from "./middlewares/errorHandler.js";
-
+import authRoutes from "./routes/authRoutes.js";
 
 configDotenv();
-connectDB()
+connectDB();
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -21,7 +21,7 @@ app.use(helmet());
 app.use(morgan("tiny"));
 
 // Routes
-
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
 // Error handling middleware

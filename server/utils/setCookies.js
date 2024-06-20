@@ -1,5 +1,5 @@
 const setCookies = (res, token) => {
-    res.cookie("token", token, {
+    res.cookie("projex_token", token, {
         httpOnly: true,
         secure: true,
     });
