@@ -1,41 +1,54 @@
-import React from 'react';
-import { FcGoogle } from 'react-icons/fc'; // Google icon
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import React, { useState } from "react";
+import { FcGoogle } from "react-icons/fc"; // Google icon
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 // Custom validation schema
 const schema = yup.object().shape({
   emailOrUsername: yup
     .string()
-    .required('Email or Username is required')
-    .test('is-email-or-username', 'Invalid Email or Username', (value) => {
+    .required("Email or Username is required")
+    .test("is-email-or-username", "Invalid Email or Username", (value) => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/; // Example regex for username
       return emailRegex.test(value) || usernameRegex.test(value);
     }),
-  password: yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters"),
 });
 
 const Login = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(schema),
   });
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-    console.log(backendUrl)
+    setLoading(true);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, data);
+      const response = await axios.post(
+        `${backendUrl}/auth/login`,
+        data
+      );
       if (response.status === 200) {
-        navigate('/');
+        navigate("/");
       }
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
       // Handle error (e.g., show a notification to the user)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,9 +65,11 @@ const Login = () => {
               type="text"
               placeholder="Enter your email or username"
               className="input input-bordered w-full"
-              {...register('emailOrUsername')}
+              {...register("emailOrUsername")}
             />
-            {errors.emailOrUsername && <p className="text-red-600">{errors.emailOrUsername.message}</p>}
+            {errors.emailOrUsername && (
+              <p className="text-red-600">{errors.emailOrUsername.message}</p>
+            )}
           </div>
           <div className="form-control">
             <label className="label">
@@ -64,13 +79,19 @@ const Login = () => {
               type="password"
               placeholder="Enter your password"
               className="input input-bordered w-full"
-              {...register('password')}
+              {...register("password")}
             />
-            {errors.password && <p className="text-red-600">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-red-600">{errors.password.message}</p>
+            )}
           </div>
           <div className="form-control">
-            <button type="submit" className="btn btn-primary w-full">
-              Login
+            <button type="submit" className="btn btn-primary w-full" disabled={loading}>
+              {loading ? (
+                <span className="loading loading-infinity loading-lg"></span>
+              ) : (
+                "Login"
+              )}
             </button>
           </div>
         </form>
