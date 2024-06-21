@@ -21,7 +21,8 @@ const ProjectCreateForm = () => {
   const onSubmit = (data) => {
     const calculatedDueDate = addWeeks(new Date(data.startDate), data.weeks);
     const finalData = { ...data, dueDate: calculatedDueDate };
-    console.log(finalData);
+
+    
     // Send finalData to server or perform other actions
   };
 
@@ -101,17 +102,6 @@ const ProjectCreateForm = () => {
           />
         </div>
       )}
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text">Client</span>
-        </label>
-        <input
-          {...register("client")}
-          type="text"
-          placeholder="Client Name (Optional)"
-          className="input input-bordered w-full"
-        />
-      </div>
       <div className="form-control mt-4">
         <button type="submit" className="btn btn-primary">
           Create Project

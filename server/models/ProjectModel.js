@@ -18,6 +18,10 @@ const projectSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    weeks: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
