@@ -1,19 +1,39 @@
-import Member from "../models/memberModel";
-import Project from "../models/ProjectModel";
-import { ApiError, CustomError } from "../utils/customError";
-import { ApiResponse } from "../utils/ApiResponse";
-import asyncHandler from "../utils/asyncHandler";
+import Member from "../models/memberModel.js";
+import Project from "../models/ProjectModel.js";
+import { CustomError } from "../utils/customError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 export const createProject = asyncHandler(async (req, res, next) => {
   const { name, description, startDate, dueDate, weeks } = req.body;
-  if (!name || !startDate || !dueDate || !weeks) {
+
+  // Log the request body for debugging
+  console.log(req.body);
+
+  // Validate required fields
+  if (!name || !description || !startDate || !dueDate || !weeks) {
     return next(new CustomError("All fields are required", 400));
   }
-  const project = new Project(name, description, startDate, dueDate, weeks);
-  await project.save();
-  return res
-    .status(200)
-    .json(new ApiResponse(200, "Project created successfully", project));
+
+  // Create a new project instance
+  const project = new Project({
+    name,
+    description,
+    startDate,
+    dueDate,
+    weeks,
+  });
+
+  // Save the project to the database
+  try {
+    await project.save();
+    return res
+      .status(201)
+      .json(new ApiResponse(201, "Project created successfully", project));
+  } catch (error) {
+    // Handle potential errors
+    return next(new CustomError(error.message, 500));
+  }
 });
 
 export const getProjectById = async (req, res) => {

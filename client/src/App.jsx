@@ -10,8 +10,10 @@ import Profile from "./pages/Profile";
 import Project from "./pages/Project";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import axios from "axios";
 
 const App = () => {
+  axios.defaults.withCredentials = true;
   return (
     <BrowserRouter>
       <Routes>

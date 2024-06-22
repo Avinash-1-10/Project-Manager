@@ -2,28 +2,47 @@ import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import addWeeks from 'date-fns/addWeeks';
+import addWeeks from "date-fns/addWeeks";
+import axios from "axios";
+import Loader from "./Loader";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const projectSchema = yup.object().shape({
   name: yup.string().required("Project name is required"),
   description: yup.string().required("Description is required"),
-  weeks: yup.number().min(1).max(10).required("Number of weeks is required"),
+  weeks: yup
+    .number()
+    .min(1, "Minimum 1 week is required")
+    .max(10, "Maximum 10 weeks are allowed")
+    .required("Number of weeks is required"),
   startDate: yup.date().required("Start date is required"),
-  client: yup.string(),
 });
 
 const ProjectCreateForm = () => {
   const [dueDate, setDueDate] = useState(null);
-  const { register, handleSubmit, control, formState: { errors }, watch } = useForm({
+  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    watch,
+  } = useForm({
     resolver: yupResolver(projectSchema),
   });
 
-  const onSubmit = (data) => {
-    const calculatedDueDate = addWeeks(new Date(data.startDate), data.weeks);
-    const finalData = { ...data, dueDate: calculatedDueDate };
-
-    
-    // Send finalData to server or perform other actions
+  const onSubmit = async (data) => {
+    setLoading(true);
+    try {
+      const calculatedDueDate = addWeeks(new Date(data.startDate), data.weeks);
+      const finalData = { ...data, dueDate: calculatedDueDate };
+      const response = await axios.post(`${BACKEND_URL}/projects`, finalData);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error creating project:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const weeks = watch("weeks");
@@ -32,7 +51,7 @@ const ProjectCreateForm = () => {
   React.useEffect(() => {
     if (startDate && weeks) {
       const calculatedDueDate = addWeeks(new Date(startDate), weeks);
-      setDueDate(calculatedDueDate.toISOString().split('T')[0]);
+      setDueDate(calculatedDueDate.toISOString().split("T")[0]);
     }
   }, [startDate, weeks]);
 
@@ -59,7 +78,9 @@ const ProjectCreateForm = () => {
           className="textarea textarea-bordered w-full"
           placeholder="Project Description"
         ></textarea>
-        {errors.description && <p className="text-error">{errors.description.message}</p>}
+        {errors.description && (
+          <p className="text-error">{errors.description.message}</p>
+        )}
       </div>
       <div className="form-control">
         <label className="label">
@@ -70,8 +91,10 @@ const ProjectCreateForm = () => {
           className="select select-bordered w-full"
         >
           <option value="">Select Weeks</option>
-          {[...Array(10).keys()].map(i => (
-            <option key={i + 1} value={i + 1}>{i + 1} week{ i + 1 > 1 && "s"}</option>
+          {[...Array(10).keys()].map((i) => (
+            <option key={i + 1} value={i + 1}>
+              {i + 1} week{i + 1 > 1 && "s"}
+            </option>
           ))}
         </select>
         {errors.weeks && <p className="text-error">{errors.weeks.message}</p>}
@@ -86,7 +109,9 @@ const ProjectCreateForm = () => {
             type="date"
             className="input input-bordered w-full"
           />
-          {errors.startDate && <p className="text-error">{errors.startDate.message}</p>}
+          {errors.startDate && (
+            <p className="text-error">{errors.startDate.message}</p>
+          )}
         </div>
       )}
       {dueDate && (
@@ -103,8 +128,8 @@ const ProjectCreateForm = () => {
         </div>
       )}
       <div className="form-control mt-4">
-        <button type="submit" className="btn btn-primary">
-          Create Project
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? <Loader /> : "Create Project"}
         </button>
       </div>
     </form>
