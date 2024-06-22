@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 import axios from "axios";
+import Loader from "../components/Loader";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -187,7 +188,7 @@ const Register = () => {
               disabled={loading}
             >
               {loading ? (
-                <span className="loading loading-infinity loading-lg"></span>
+                <Loader/>
               ) : (
                 "Register"
               )}

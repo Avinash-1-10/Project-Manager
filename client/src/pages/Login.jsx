@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import Loader from "../components/Loader";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Custom validation schema
@@ -89,7 +90,7 @@ const Login = () => {
               disabled={loading}
             >
               {loading ? (
-                <span className="loading loading-infinity loading-lg"></span>
+                <Loader/>
               ) : (
                 "Login"
               )}

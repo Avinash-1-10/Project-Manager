@@ -9,7 +9,7 @@ export const createProject = asyncHandler(async (req, res, next) => {
   if (!name || !startDate || !dueDate || !weeks) {
     return next(new CustomError("All fields are required", 400));
   }
-  const project = new Project(name, description, startDate, dueDate);
+  const project = new Project(name, description, startDate, dueDate, weeks);
   await project.save();
   return res
     .status(200)
