@@ -5,7 +5,6 @@ import verifyToken from "../utils/verifyToken.js";
 const authMiddleware = async (req, res, next) => {
   try {
     // Check for token presence
-    console.table(req.cookies);
     const token = req.cookies.projex_token;
     if (!token) {
       throw new CustomError("Authentication required", 401);
@@ -13,8 +12,7 @@ const authMiddleware = async (req, res, next) => {
 
     // Verify the token using a separate async function
     const decoded = await verifyToken(token);
-    req.user = decoded;
-
+    req.userId = decoded.id;
     next();
   } catch (error) {
     // Handle JWT errors
