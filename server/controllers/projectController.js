@@ -7,9 +7,6 @@ import asyncHandler from "../utils/asyncHandler.js";
 export const createProject = asyncHandler(async (req, res, next) => {
   const { name, description, startDate, dueDate, weeks } = req.body;
 
-  // Log the request body for debugging
-  console.log(req.body);
-
   // Validate required fields
   if (!name || !description || !startDate || !dueDate || !weeks) {
     return next(new CustomError("All fields are required", 400));
@@ -24,16 +21,19 @@ export const createProject = asyncHandler(async (req, res, next) => {
     weeks,
   });
 
-  // Save the project to the database
-  try {
-    await project.save();
-    return res
-      .status(201)
-      .json(new ApiResponse(201, "Project created successfully", project));
-  } catch (error) {
-    // Handle potential errors
-    return next(new CustomError(error.message, 500));
-  }
+  await project.save();
+  return res
+    .status(201)
+    .json(new ApiResponse(201, "Project created successfully", project));
+});
+
+export const getProjects = asyncHandler(async (req, res, next) => {
+  console.log(req.userId)
+  const projects = await Project.find();
+  const total = await Project.countDocuments();
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Projects fetched successfully", {projects, total}));
 });
 
 export const getProjectById = async (req, res) => {

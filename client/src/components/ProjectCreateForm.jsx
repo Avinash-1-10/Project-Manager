@@ -36,6 +36,7 @@ const ProjectCreateForm = () => {
     try {
       const calculatedDueDate = addWeeks(new Date(data.startDate), data.weeks);
       const finalData = { ...data, dueDate: calculatedDueDate };
+      console.log(finalData);
       const response = await axios.post(`${BACKEND_URL}/projects`, finalData);
       console.log(response.data);
     } catch (error) {

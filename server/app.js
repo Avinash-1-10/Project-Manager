@@ -21,7 +21,7 @@ app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(cookiParser());
 app.use(helmet());
-app.use(morgan("tiny"));
+app.use(morgan("dev"));
 
 // Routes
 app.use("/api/auth", authRoutes);
