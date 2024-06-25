@@ -13,7 +13,7 @@ router.post("/", createUser);
 // get all users
 router.get("/", getUsers);
 // get user by id
-router.get("/:id", getUserById);
+router.get("/id/:id", getUserById);
 // get user by query
 router.get("/query", getUserByQuery);
 

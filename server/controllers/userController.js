@@ -66,11 +66,18 @@ export const getUserById = asyncHandler(async (req, res, next) => {
     .json(new ApiResponse(200, "User fetched successfully", user));
 });
 
-// Controller function to get a user by query parameters (username, email, or ID)
+// Controller function to get a user by query parameters (username or email)
 export const getUserByQuery = asyncHandler(async (req, res, next) => {
-  const { username, email, id } = req.query; // Destructuring the query parameters
+  // Destructuring the query parameters
+  const { username, email } = req.query;
+
+  // Check if at least one query parameter is provided
+  if (!username && !email) {
+    return next(new CustomError("Please provide a username or email", 400));
+  }
+
   // Finding a user matching any of the provided query parameters
-  const user = await User.findOne({ $or: [{ username }, { email }, { id }] });
+  const user = await User.findOne({ $or: [{ username }, { email }] });
 
   if (!user) {
     return next(new CustomError("User not found", 404));
