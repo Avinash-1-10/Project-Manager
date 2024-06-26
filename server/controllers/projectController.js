@@ -3,10 +3,17 @@ import Project from "../models/ProjectModel.js";
 import { CustomError } from "../utils/customError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import mongoose from "mongoose";
 
 export const createProject = asyncHandler(async (req, res, next) => {
   const { name, description, startDate, dueDate, weeks } = req.body;
+
+  // count the number of projects created by the user
+  const count = await Project.countDocuments({ owner: req.user._id });
+  if (count >= 3) {
+    return next(
+      new CustomError("You have reached the maximum number of projects", 400)
+    );
+  }
 
   // Validate required fields
   if (!name || !description || !startDate || !dueDate || !weeks) {
