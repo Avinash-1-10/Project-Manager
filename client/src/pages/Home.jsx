@@ -1,4 +1,5 @@
-import React from "react";
+import Layout from "../Layout";
+import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -9,7 +10,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import Layout from "../Layout";
 
 ChartJS.register(
   CategoryScale,
@@ -20,35 +20,87 @@ ChartJS.register(
   Legend
 );
 
+import axios from "axios";
+import Loader from "../components/Loader";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const dummyData = [
-  { name: "Project A", startDate: "2024-01-01", endDate: "2024-12-31" },
-  { name: "Project B", startDate: "2024-03-01", endDate: "2024-11-15" },
-  { name: "Project C", startDate: "2024-06-01", endDate: "2024-08-30" },
-  { name: "Project C", startDate: "2024-09-01", endDate: "2024-10-10" },
+  {
+    _id: "667a5f4442fd5d0dc607272e",
+    name: "Task Manager",
+    totalDays: 351,
+    remainingDays: 364,
+  },
+  {
+    _id: "667a5f5a42fd5d0dc6072730",
+    name: "Task Manager",
+    totalDays: 14,
+    remainingDays: 13,
+  },
+  {
+    _id: "667a5fc0063c78d5f9e96695",
+    name: "Task Manager",
+    totalDays: 14,
+    remainingDays: 13,
+  },
+  {
+    _id: "667a61423af09ff9be23067e",
+    name: "Task Manager",
+    totalDays: 14,
+    remainingDays: 13,
+  },
+  {
+    _id: "667bf6a044ee9cb81a9cddbf",
+    name: "Project Manager",
+    totalDays: 14,
+    remainingDays: 14,
+  },
+  {
+    _id: "667bf81403a2eb940c7a353f",
+    name: "Project Manager",
+    totalDays: 14,
+    remainingDays: 14,
+  },
+  {
+    _id: "667bfb687aff07b8c751e62c",
+    name: "Pojex",
+    totalDays: 14,
+    remainingDays: 14,
+  },
+  {
+    _id: "667bfb9be0082325e25be11b",
+    name: "Pojex",
+    totalDays: 14,
+    remainingDays: 14,
+  },
 ];
 
-const calculateDays = (startDate, endDate) => {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const diffTime = Math.abs(end - start);
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-};
-
-const calculateRemainingDays = (endDate) => {
-  const end = new Date(endDate);
-  const current = new Date();
-  const diffTime = Math.abs(end - current);
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-};
-
 const Home = () => {
-  const labels = dummyData.map((project) => project.name);
-  const totalDays = dummyData.map((project) =>
-    calculateDays(project.startDate, project.endDate)
-  );
-  const remainingDays = dummyData.map((project) =>
-    calculateRemainingDays(project.endDate)
-  );
+  const [labels, setLabels] = useState([]);
+  const [totalDays, setTotalDays] = useState([]);
+  const [remainingDays, setRemainingDays] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getProjectDetails = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(
+        `${BACKEND_URL}/projects/stats/deadline`
+      );
+      const projectData = data.data;
+      setLabels(projectData.map((project) => project.name));
+      setTotalDays(projectData.map((project) => project.totalDays));
+      setRemainingDays(projectData.map((project) => project.remainingDays));
+    } catch (error) {
+      console.error("Error fetching project data:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getProjectDetails();
+  }, []);
 
   const data = {
     labels,
@@ -56,53 +108,44 @@ const Home = () => {
       {
         label: "Total Days",
         data: totalDays,
-        backgroundColor: "#3B82F6", // Light blue
-        borderColor: "white", // Blue
+        backgroundColor: "#3B82F6",
+        borderColor: "white",
         borderWidth: 1,
       },
       {
         label: "Remaining Days",
         data: remainingDays,
-        backgroundColor: "#10B981", // Light orange
-        borderColor: "white", // Orange
+        backgroundColor: "#10B981",
+        borderColor: "white",
         borderWidth: 1,
       },
     ],
   };
 
   const options = {
-    responsive: true, // Ensure chart adapts to different screen sizes
+    responsive: true,
     plugins: {
-      legend: {
-        position: "top", // Display legend at the top
-      },
-      title: {
-        display: true,
-        text: "Project Progress and Remaining Time", // Chart title
-      },
+      legend: { position: "top" },
+      title: { display: true, text: "Project Progress and Remaining Time" },
     },
     scales: {
-      x: {
-        title: {
-          display: true,
-          text: "Projects", // X-axis label
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Days", // Y-axis label
-        },
-      },
+      x: { title: { display: true, text: "Projects" } },
+      y: { title: { display: true, text: "Days" } },
     },
   };
 
   return (
     <Layout>
       <div className="container mx-auto p-4">
-        <div className=" rounded-lg p-6">
-          <Bar data={data} options={options} />
-        </div>
+        {loading ? (
+          <div className="flex justify-center items-center h-screen">
+            <Loader/>
+          </div>
+        ) : (
+          <div className=" rounded-lg p-6">
+            <Bar data={data} options={options} />
+          </div>
+        )}
       </div>
     </Layout>
   );
