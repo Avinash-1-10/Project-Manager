@@ -22,6 +22,7 @@ ChartJS.register(
 
 import axios from "axios";
 import Loader from "../components/Loader";
+import { useNavigate } from "react-router-dom";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const dummyData = [
@@ -80,6 +81,7 @@ const Home = () => {
   const [totalDays, setTotalDays] = useState([]);
   const [remainingDays, setRemainingDays] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const getProjectDetails = async () => {
     setLoading(true);
@@ -93,6 +95,9 @@ const Home = () => {
       setRemainingDays(projectData.map((project) => project.remainingDays));
     } catch (error) {
       console.error("Error fetching project data:", error.message);
+      if(error.response.status===401){
+        navigate('/login')
+      }
     } finally {
       setLoading(false);
     }
