@@ -3,6 +3,7 @@ import Project from "../models/ProjectModel.js";
 import { CustomError } from "../utils/customError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import mongoose from "mongoose";
 
 export const createProject = asyncHandler(async (req, res, next) => {
   const { name, description, startDate, dueDate, weeks } = req.body;
@@ -14,6 +15,7 @@ export const createProject = asyncHandler(async (req, res, next) => {
 
   // Create a new project instance
   const project = new Project({
+    owner: req.user._id,
     name,
     description,
     startDate,
@@ -28,12 +30,13 @@ export const createProject = asyncHandler(async (req, res, next) => {
 });
 
 export const getProjects = asyncHandler(async (req, res, next) => {
-  console.log(req.userId)
   const projects = await Project.find();
   const total = await Project.countDocuments();
   return res
     .status(200)
-    .json(new ApiResponse(200, "Projects fetched successfully", {projects, total}));
+    .json(
+      new ApiResponse(200, "Projects fetched successfully", { projects, total })
+    );
 });
 
 export const getProjectById = async (req, res) => {
@@ -124,3 +127,45 @@ export const deleteProject = async (req, res) => {
     return res.status(500).json(new ApiError(500, error.message));
   }
 };
+
+// stats
+export const getProjectsDeadlineStats = asyncHandler(async (req, res, next) => {
+  const { userId } = req.params;
+
+  const stats = await Project.aggregate([
+    {
+      $match: { owner: userId },
+    },
+    {
+      $project: {
+        name: 1,
+        totalDays: {
+          $round: [
+            {
+              $divide: [
+                { $subtract: ["$dueDate", "$startDate"] },
+                1000 * 60 * 60 * 24,
+              ],
+            },
+            0,
+          ],
+        },
+        remainingDays: {
+          $round: [
+            {
+              $divide: [
+                { $subtract: ["$dueDate", new Date()] },
+                1000 * 60 * 60 * 24,
+              ],
+            },
+            0,
+          ],
+        },
+      },
+    },
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Projects fetched successfully", stats));
+});
