@@ -10,7 +10,8 @@ const generateToken = (id) => {
 
   // Options for the token (optional)
   const options = {
-    expiresIn: "1h", // Token expiration time (e.g., 1 hour)
+    // generaate token for 10 days
+    expiresIn: "10d",
   };
 
   // Generate the token using the secret key
