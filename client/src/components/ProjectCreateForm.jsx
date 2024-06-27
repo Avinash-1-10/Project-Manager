@@ -5,7 +5,10 @@ import * as yup from "yup";
 import addWeeks from "date-fns/addWeeks";
 import axios from "axios";
 import Loader from "./Loader";
+import useToast from "../hooks/useToast";
+import ToastContainer from "./ToastContainer";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 
 const projectSchema = yup.object().shape({
   name: yup.string().required("Project name is required"),
@@ -19,6 +22,7 @@ const projectSchema = yup.object().shape({
 });
 
 const ProjectCreateForm = () => {
+  const { toasts, addToast, removeToast } = useToast();
   const [dueDate, setDueDate] = useState(null);
   const [loading, setLoading] = useState(false);
   const {
@@ -33,6 +37,7 @@ const ProjectCreateForm = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    addToast('This is an error message!', 'success')
     try {
       const calculatedDueDate = addWeeks(new Date(data.startDate), data.weeks);
       const finalData = { ...data, dueDate: calculatedDueDate };
@@ -57,6 +62,7 @@ const ProjectCreateForm = () => {
   }, [startDate, weeks]);
 
   return (
+    <>
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="form-control">
         <label className="label">
@@ -134,6 +140,8 @@ const ProjectCreateForm = () => {
         </button>
       </div>
     </form>
+    <ToastContainer toasts={toasts} removeToast={removeToast} />
+    </>
   );
 };
 
