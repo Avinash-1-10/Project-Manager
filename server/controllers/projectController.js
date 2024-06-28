@@ -137,7 +137,7 @@ export const deleteProject = async (req, res) => {
 
 // stats
 export const getProjectsDeadlineStats = asyncHandler(async (req, res, next) => {
-  const { userId } = req.params;
+  const userId = req.user._id;
 
   const stats = await Project.aggregate([
     {
@@ -176,3 +176,32 @@ export const getProjectsDeadlineStats = asyncHandler(async (req, res, next) => {
     .status(200)
     .json(new ApiResponse(200, "Projects fetched successfully", stats));
 });
+
+
+export const getUserProjectDetails = asyncHandler(async (req, res, next) => {
+  const userId = req.user._id;
+
+    // Find projects owned by the user
+    const projects = await Project.find({ owner: userId }).populate("owner");
+
+    const projectDetails = await Promise.all(
+      projects.map(async (project) => {
+        const members = await Member.find({ project: project._id }).populate("member");
+        const totalDays = Math.ceil((project.dueDate - project.startDate) / (1000 * 60 * 60 * 24));
+        const remainingDays = Math.ceil((project.dueDate - new Date()) / (1000 * 60 * 60 * 24));
+
+        return {
+          name: project.name,
+          startDate: project.startDate,
+          dueDate: project.dueDate,
+          totalDays,
+          remainingDays,
+          numberOfMembers: members.length,
+          members: members.map((m) => ({ memberId: m.member._id, memberName: `${m.member.firstName} ${m.member.lastName}`, role: m.role })),
+          description: project.description,
+        };
+      })
+    );
+
+    return res.status(200).json(new ApiResponse(200, "Projects fetched successfully", projectDetails));
+})

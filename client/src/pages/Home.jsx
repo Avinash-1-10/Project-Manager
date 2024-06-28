@@ -96,7 +96,6 @@ const Home = () => {
       setLabels(projectData.map((project) => project.name));
       setTotalDays(projectData.map((project) => project.totalDays));
       setRemainingDays(projectData.map((project) => project.remainingDays));
-      addToast('This is an error message!', 'error')
     } catch (error) {
       console.error("Error fetching project data:", error.message);
       if(error.response.status===401){

@@ -6,24 +6,21 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ProjectCard = ({ project }) => {
-  const { name, startDate, dueDate } = project;
+  const { name, startDate, dueDate, totalDays, remainingDays } = project;
 
-  const calculateRemainingDays = (dueDate) => {
-    const due = new Date(dueDate);
-    const now = new Date();
-    const diffTime = Math.abs(due - now);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
+  // Calculate remaining days ensuring it doesn't exceed total days
+  const validRemainingDays =
+    remainingDays > totalDays ? totalDays : remainingDays;
 
-  const remainingDays = calculateRemainingDays(dueDate);
+  // Calculate percentage of remaining days
+  const remainingPercentage = (validRemainingDays / totalDays) * 100;
 
   const data = {
     datasets: [
       {
-        data: [remainingDays, 100 - remainingDays],
-        backgroundColor: ["#E0E0E0", "#4CAF50"],
-        hoverBackgroundColor: ["#D5D5D5", "#45A049"],
+        data: [remainingPercentage, 100 - remainingPercentage],
+        backgroundColor: ["#4CAF50", "#E0E0E0"],
+        hoverBackgroundColor: ["#45A049", "#D5D5D5"],
       },
     ],
   };
