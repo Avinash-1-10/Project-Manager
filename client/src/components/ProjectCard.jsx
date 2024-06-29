@@ -2,6 +2,7 @@ import React from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Link } from "react-router-dom";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -45,7 +46,7 @@ const ProjectCard = ({ project }) => {
       </div>
       <div className="pb-4 px-4 flex justify-between">
         <div className="flex flex-col items-center">
-          <p>Start-Due</p>
+          <p className="font-bold">Start-Due</p>
           <div className="flex items-center gap-1">
             <p>{formatDate(startDate)}</p>
             <p>-</p>
@@ -53,7 +54,7 @@ const ProjectCard = ({ project }) => {
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <p>Remaining Days</p>
+          <p className="font-bold">Remaining Days</p>
           <p>{remainingDays}</p>
         </div>
       </div>
@@ -65,6 +66,9 @@ const ProjectCard = ({ project }) => {
           />
         </div>
       </div>
+      <Link to={`/project/${project._id}`} className="m-3 ">
+        <button className="btn btn-active btn-primary w-full">Open</button>
+      </Link>
     </div>
   );
 };
