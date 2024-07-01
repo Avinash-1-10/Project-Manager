@@ -27,57 +27,6 @@ import useToast from "../hooks/useToast";
 import ToastContainer from "../components/ToastContainer";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-const dummyData = [
-  {
-    _id: "667a5f4442fd5d0dc607272e",
-    name: "Task Manager",
-    totalDays: 351,
-    remainingDays: 364,
-  },
-  {
-    _id: "667a5f5a42fd5d0dc6072730",
-    name: "Task Manager",
-    totalDays: 14,
-    remainingDays: 13,
-  },
-  {
-    _id: "667a5fc0063c78d5f9e96695",
-    name: "Task Manager",
-    totalDays: 14,
-    remainingDays: 13,
-  },
-  {
-    _id: "667a61423af09ff9be23067e",
-    name: "Task Manager",
-    totalDays: 14,
-    remainingDays: 13,
-  },
-  {
-    _id: "667bf6a044ee9cb81a9cddbf",
-    name: "Project Manager",
-    totalDays: 14,
-    remainingDays: 14,
-  },
-  {
-    _id: "667bf81403a2eb940c7a353f",
-    name: "Project Manager",
-    totalDays: 14,
-    remainingDays: 14,
-  },
-  {
-    _id: "667bfb687aff07b8c751e62c",
-    name: "Pojex",
-    totalDays: 14,
-    remainingDays: 14,
-  },
-  {
-    _id: "667bfb9be0082325e25be11b",
-    name: "Pojex",
-    totalDays: 14,
-    remainingDays: 14,
-  },
-];
-
 const Home = () => {
   const [labels, setLabels] = useState([]);
   const [totalDays, setTotalDays] = useState([]);
@@ -98,8 +47,8 @@ const Home = () => {
       setRemainingDays(projectData.map((project) => project.remainingDays));
     } catch (error) {
       console.error("Error fetching project data:", error.message);
-      if(error.response.status===401){
-        navigate('/login')
+      if (error.response.status === 401) {
+        navigate("/login");
       }
     } finally {
       setLoading(false);
@@ -147,7 +96,7 @@ const Home = () => {
       <div className="container mx-auto p-4">
         {loading ? (
           <div className="flex justify-center items-center h-screen">
-            <Loader/>
+            <Loader />
           </div>
         ) : (
           <div className=" rounded-lg p-6">

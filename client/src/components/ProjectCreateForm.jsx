@@ -9,7 +9,6 @@ import useToast from "../hooks/useToast";
 import ToastContainer from "./ToastContainer";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-
 const projectSchema = yup.object().shape({
   name: yup.string().required("Project name is required"),
   description: yup.string().required("Description is required"),
@@ -37,16 +36,19 @@ const ProjectCreateForm = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    
+
     try {
       const calculatedDueDate = addWeeks(new Date(data.startDate), data.weeks);
       const finalData = { ...data, dueDate: calculatedDueDate };
       console.log(finalData);
       const response = await axios.post(`${BACKEND_URL}/projects`, finalData);
-      addToast(response.data.message, 'success')
+      addToast(response.data.message, "success");
     } catch (error) {
       console.error("Error creating project:", error);
-      addToast(error.response.data.message, 'error')
+      if (error.response.status === 401) {
+        navigate("/login");
+      }
+      addToast(error.response.data.message, "error");
     } finally {
       setLoading(false);
     }
@@ -64,84 +66,84 @@ const ProjectCreateForm = () => {
 
   return (
     <>
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text">Project Name</span>
-        </label>
-        <input
-          {...register("name")}
-          type="text"
-          placeholder="Project Name"
-          className="input input-bordered w-full"
-        />
-        {errors.name && <p className="text-error">{errors.name.message}</p>}
-      </div>
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text">Description</span>
-        </label>
-        <textarea
-          {...register("description")}
-          className="textarea textarea-bordered w-full"
-          placeholder="Project Description"
-        ></textarea>
-        {errors.description && (
-          <p className="text-error">{errors.description.message}</p>
-        )}
-      </div>
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text">Number of Weeks</span>
-        </label>
-        <select
-          {...register("weeks")}
-          className="select select-bordered w-full"
-        >
-          <option value="">Select Weeks</option>
-          {[...Array(10).keys()].map((i) => (
-            <option key={i + 1} value={i + 1}>
-              {i + 1} week{i + 1 > 1 && "s"}
-            </option>
-          ))}
-        </select>
-        {errors.weeks && <p className="text-error">{errors.weeks.message}</p>}
-      </div>
-      {weeks && (
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full">
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Start Date</span>
+            <span className="label-text">Project Name</span>
           </label>
           <input
-            {...register("startDate")}
-            type="date"
+            {...register("name")}
+            type="text"
+            placeholder="Project Name"
             className="input input-bordered w-full"
           />
-          {errors.startDate && (
-            <p className="text-error">{errors.startDate.message}</p>
+          {errors.name && <p className="text-error">{errors.name.message}</p>}
+        </div>
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Description</span>
+          </label>
+          <textarea
+            {...register("description")}
+            className="textarea textarea-bordered w-full"
+            placeholder="Project Description"
+          ></textarea>
+          {errors.description && (
+            <p className="text-error">{errors.description.message}</p>
           )}
         </div>
-      )}
-      {dueDate && (
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Due Date</span>
+            <span className="label-text">Number of Weeks</span>
           </label>
-          <input
-            type="date"
-            value={dueDate}
-            readOnly
-            className="input input-bordered w-full"
-          />
+          <select
+            {...register("weeks")}
+            className="select select-bordered w-full"
+          >
+            <option value="">Select Weeks</option>
+            {[...Array(10).keys()].map((i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1} week{i + 1 > 1 && "s"}
+              </option>
+            ))}
+          </select>
+          {errors.weeks && <p className="text-error">{errors.weeks.message}</p>}
         </div>
-      )}
-      <div className="form-control mt-4">
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? <Loader /> : "Create Project"}
-        </button>
-      </div>
-    </form>
-    <ToastContainer toasts={toasts} removeToast={removeToast} />
+        {weeks && (
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Start Date</span>
+            </label>
+            <input
+              {...register("startDate")}
+              type="date"
+              className="input input-bordered w-full"
+            />
+            {errors.startDate && (
+              <p className="text-error">{errors.startDate.message}</p>
+            )}
+          </div>
+        )}
+        {dueDate && (
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Due Date</span>
+            </label>
+            <input
+              type="date"
+              value={dueDate}
+              readOnly
+              className="input input-bordered w-full"
+            />
+          </div>
+        )}
+        <div className="form-control mt-4">
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? <Loader /> : "Create Project"}
+          </button>
+        </div>
+      </form>
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </>
   );
 };
