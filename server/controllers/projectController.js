@@ -126,7 +126,8 @@ export const deleteProject = async (req, res) => {
     if (!project) {
       return res.status(404).json(new ApiError(404, "Project not found"));
     }
-    await project.remove();
+    await Project.findByIdAndDelete(req.params.id);
+    await Member.deleteMany({ project: req.params.id });
     return res
       .status(200)
       .json(new ApiResponse(200, "Project deleted successfully", project));

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import Layout from '../Layout';
-import ProjectCard from '../components/ProjectCard';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import Layout from "../Layout";
+import ProjectCard from "../components/ProjectCard";
+import axios from "axios";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-// const projects = [
+
 //   {
 //     name: 'New Website Design',
 //     startDate: '2024-06-01',
@@ -35,20 +35,16 @@ const Projects = () => {
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState([]);
 
-
-
   const getProjectDetails = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(
-        `${BACKEND_URL}/projects/stats/details`
-      );
+      const { data } = await axios.get(`${BACKEND_URL}/projects/stats/details`);
       const projectData = data.data;
       setProjects(projectData);
     } catch (error) {
       console.error("Error fetching project data:", error.message);
-      if(error.response.status===401){
-        navigate('/login')
+      if (error.response.status === 401) {
+        navigate("/login");
       }
     } finally {
       setLoading(false);
