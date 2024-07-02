@@ -60,25 +60,21 @@ export const getProjectById = async (req, res) => {
   }
 };
 
-export const updateProject = async (req, res) => {
-  try {
-    const { name, description, startDate, dueDate } = req.body;
-    const project = await Project.findById(req.params.id);
-    if (!project) {
-      return res.status(404).json(new ApiError(404, "Project not found"));
-    }
-    project.name = name;
-    project.description = description;
-    project.startDate = startDate;
-    project.dueDate = dueDate;
-    await project.save();
-    return res
-      .status(200)
-      .json(new ApiResponse(200, "Project updated successfully", project));
-  } catch (error) {
-    return res.status(500).json(new ApiError(500, error.message));
+export const updateProject = asyncHandler(async (req, res) => {
+  const { name, description, startDate, dueDate } = req.body;
+  const project = await Project.findById(req.params.id);
+  if (!project) {
+    return res.status(404).json(new ApiError(404, "Project not found"));
   }
-};
+  project.name = name;
+  project.description = description;
+  project.startDate = startDate;
+  project.dueDate = dueDate;
+  await project.save();
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Project updated successfully", project));
+});
 
 export const addMemberToProject = async (req, res) => {
   try {
@@ -120,21 +116,17 @@ export const removeMemberFromProject = async (req, res) => {
   }
 };
 
-export const deleteProject = async (req, res) => {
-  try {
-    const project = await Project.findById(req.params.id);
-    if (!project) {
-      return res.status(404).json(new ApiError(404, "Project not found"));
-    }
-    await Project.findByIdAndDelete(req.params.id);
-    await Member.deleteMany({ project: req.params.id });
-    return res
-      .status(200)
-      .json(new ApiResponse(200, "Project deleted successfully", project));
-  } catch (error) {
-    return res.status(500).json(new ApiError(500, error.message));
+export const deleteProject = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params.id);
+  if (!project) {
+    return res.status(404).json(new ApiError(404, "Project not found"));
   }
-};
+  await Project.findByIdAndDelete(req.params.id);
+  await Member.deleteMany({ project: req.params.id });
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Project deleted successfully", project));
+});
 
 // stats
 export const getProjectsDeadlineStats = asyncHandler(async (req, res, next) => {
@@ -178,31 +170,44 @@ export const getProjectsDeadlineStats = asyncHandler(async (req, res, next) => {
     .json(new ApiResponse(200, "Projects fetched successfully", stats));
 });
 
-
 export const getUserProjectDetails = asyncHandler(async (req, res, next) => {
   const userId = req.user._id;
 
-    // Find projects owned by the user
-    const projects = await Project.find({ owner: userId }).populate("owner");
+  // Find projects owned by the user
+  const projects = await Project.find({ owner: userId }).populate("owner");
 
-    const projectDetails = await Promise.all(
-      projects.map(async (project) => {
-        const members = await Member.find({ project: project._id }).populate("member");
-        const totalDays = Math.ceil((project.dueDate - project.startDate) / (1000 * 60 * 60 * 24));
-        const remainingDays = Math.ceil((project.dueDate - new Date()) / (1000 * 60 * 60 * 24));
+  const projectDetails = await Promise.all(
+    projects.map(async (project) => {
+      const members = await Member.find({ project: project._id }).populate(
+        "member"
+      );
+      const totalDays = Math.ceil(
+        (project.dueDate - project.startDate) / (1000 * 60 * 60 * 24)
+      );
+      const remainingDays = Math.ceil(
+        (project.dueDate - new Date()) / (1000 * 60 * 60 * 24)
+      );
 
-        return {
-          name: project.name,
-          startDate: project.startDate,
-          dueDate: project.dueDate,
-          totalDays,
-          remainingDays,
-          numberOfMembers: members.length,
-          members: members.map((m) => ({ memberId: m.member._id, memberName: `${m.member.firstName} ${m.member.lastName}`, role: m.role })),
-          description: project.description,
-        };
-      })
+      return {
+        name: project.name,
+        startDate: project.startDate,
+        dueDate: project.dueDate,
+        totalDays,
+        remainingDays,
+        numberOfMembers: members.length,
+        members: members.map((m) => ({
+          memberId: m.member._id,
+          memberName: `${m.member.firstName} ${m.member.lastName}`,
+          role: m.role,
+        })),
+        description: project.description,
+      };
+    })
+  );
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, "Projects fetched successfully", projectDetails)
     );
-
-    return res.status(200).json(new ApiResponse(200, "Projects fetched successfully", projectDetails));
-})
+});
