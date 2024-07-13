@@ -39,6 +39,9 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await axios.post(`${BACKEND_URL}/auth/login`, data);
+      // save data in localStorage 
+      localStorage.setItem("projex_token", response.data.data.projex_token);
+      localStorage.setItem("projex_user", JSON.stringify(response.data.data.user));
       if (response.status === 200) {
         navigate("/");
       }

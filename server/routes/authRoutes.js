@@ -5,7 +5,7 @@ import authMiddleware from "../middlewares/auth.js";
 const router = Router();
 
 router.post("/login", login);
-router.post("/logut", authMiddleware, logout)
+router.post("/logout", authMiddleware, logout)
 
 
 

@@ -34,6 +34,8 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toasts, addToast, removeToast } = useToast();
+  // const token = localStorage.getItem("projex_token"); 
+  // const user = JSON.parse(localStorage.getItem("projex_user"));
 
   const getProjectDetails = async () => {
     setLoading(true);

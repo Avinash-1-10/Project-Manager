@@ -12,12 +12,7 @@ const Modal = ({ isVisible, hideModal, children }) => {
         >
           <IoMdClose />
         </div>
-        <div className="">{children}</div>
-        <div className=" mt-4">
-          <button onClick={hideModal} className="btn btn-primary">
-            Close
-          </button>
-        </div>
+        <div className="p-2">{children}</div>
       </div>
     </div>
   );
