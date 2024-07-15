@@ -94,7 +94,7 @@ const Sidebar = () => {
         </div>
       </div>
       <Modal isVisible={isVisible} hideModal={hideModal}>
-        <div className=' rounded-lg overflow-hidden shadow-xl transform transition-all max-w-md w-full'>
+        <div className=' rounded-lg overflow-hidden transform transition-all max-w-md w-full'>
           <div className='px-6 py-4'>
             <h2 className='text-2xl font-semibold text-center mb-4'>
               Confirm Logout

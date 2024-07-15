@@ -22,10 +22,6 @@ const projectSchema = new mongoose.Schema(
     startDate: {
       type: Date,
       required: [true, "Start date is required"],
-      validate: {
-        validator: (v) => v >= new Date(),
-        message: "Start date must be today or later",
-      },
     },
     dueDate: {
       type: Date,

@@ -27,7 +27,7 @@ export const login = asyncHandler(async (req, res, next) => {
   }
 
   // Generate JWT token
-  const token = await generateToken(existingUser._id);
+  const token =  generateToken(existingUser._id);
 
   // Set cookies
   setCookies(res, token);

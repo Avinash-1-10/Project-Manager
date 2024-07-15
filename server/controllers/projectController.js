@@ -1,8 +1,8 @@
-import Member from "../models/memberModel.js";
-import Project from "../models/ProjectModel.js";
-import { CustomError } from "../utils/customError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
-import asyncHandler from "../utils/asyncHandler.js";
+import Member from '../models/memberModel.js';
+import Project from '../models/ProjectModel.js';
+import { CustomError } from '../utils/customError.js';
+import { ApiResponse } from '../utils/ApiResponse.js';
+import asyncHandler from '../utils/asyncHandler.js';
 
 export const createProject = asyncHandler(async (req, res, next) => {
   const { name, description, startDate, dueDate, weeks } = req.body;
@@ -11,13 +11,13 @@ export const createProject = asyncHandler(async (req, res, next) => {
   const count = await Project.countDocuments({ owner: req.user._id });
   if (count >= 3) {
     return next(
-      new CustomError("You have reached the maximum number of projects", 400)
+      new CustomError('You have reached the maximum number of projects', 400)
     );
   }
 
   // Validate required fields
   if (!name || !description || !startDate || !dueDate || !weeks) {
-    return next(new CustomError("All fields are required", 400));
+    return next(new CustomError('All fields are required', 400));
   }
 
   // Create a new project instance
@@ -33,7 +33,7 @@ export const createProject = asyncHandler(async (req, res, next) => {
   await project.save();
   return res
     .status(201)
-    .json(new ApiResponse(201, "Project created successfully", project));
+    .json(new ApiResponse(201, 'Project created successfully', project));
 });
 
 export const getProjects = asyncHandler(async (req, res, next) => {
@@ -42,19 +42,20 @@ export const getProjects = asyncHandler(async (req, res, next) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, "Projects fetched successfully", { projects, total })
+      new ApiResponse(200, 'Projects fetched successfully', { projects, total })
     );
 });
+
 
 export const getProjectById = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
     if (!project) {
-      return res.status(404).json(new ApiError(404, "Project not found"));
+      return res.status(404).json(new ApiError(404, 'Project not found'));
     }
     return res
       .status(200)
-      .json(new ApiResponse(200, "Project fetched successfully", project));
+      .json(new ApiResponse(200, 'Project fetched successfully', project));
   } catch (error) {
     return res.status(500).json(new ApiError(500, error.message));
   }
@@ -64,7 +65,7 @@ export const updateProject = asyncHandler(async (req, res) => {
   const { name, description, startDate, dueDate } = req.body;
   const project = await Project.findById(req.params.id);
   if (!project) {
-    return res.status(404).json(new ApiError(404, "Project not found"));
+    return res.status(404).json(new ApiError(404, 'Project not found'));
   }
   project.name = name;
   project.description = description;
@@ -73,7 +74,7 @@ export const updateProject = asyncHandler(async (req, res) => {
   await project.save();
   return res
     .status(200)
-    .json(new ApiResponse(200, "Project updated successfully", project));
+    .json(new ApiResponse(200, 'Project updated successfully', project));
 });
 
 export const addMemberToProject = async (req, res) => {
@@ -81,7 +82,7 @@ export const addMemberToProject = async (req, res) => {
     const { projectId } = req.params;
     const { memberId, role } = req.body;
     if (!memberId || !role) {
-      return res.status(400).json(new ApiError(400, "memberId is required"));
+      return res.status(400).json(new ApiError(400, 'memberId is required'));
     }
     const newMember = new Member({
       member: memberId,
@@ -91,7 +92,7 @@ export const addMemberToProject = async (req, res) => {
     await newMember.save();
     return res
       .status(200)
-      .json(new ApiResponse(200, "Member added successfully", newMember));
+      .json(new ApiResponse(200, 'Member added successfully', newMember));
   } catch (error) {
     return res.status(500).json(new ApiError(500, error.message));
   }
@@ -105,12 +106,12 @@ export const removeMemberFromProject = async (req, res) => {
       project: projectId,
     });
     if (!member) {
-      return res.status(404).json(new ApiError(404, "Member not found"));
+      return res.status(404).json(new ApiError(404, 'Member not found'));
     }
     await member.remove();
     return res
       .status(200)
-      .json(new ApiResponse(200, "Member removed successfully", member));
+      .json(new ApiResponse(200, 'Member removed successfully', member));
   } catch (error) {
     return res.status(500).json(new ApiError(500, error.message));
   }
@@ -119,13 +120,13 @@ export const removeMemberFromProject = async (req, res) => {
 export const deleteProject = asyncHandler(async (req, res) => {
   const project = await Project.findById(req.params.id);
   if (!project) {
-    return res.status(404).json(new ApiError(404, "Project not found"));
+    return res.status(404).json(new ApiError(404, 'Project not found'));
   }
   await Project.findByIdAndDelete(req.params.id);
   await Member.deleteMany({ project: req.params.id });
   return res
     .status(200)
-    .json(new ApiResponse(200, "Project deleted successfully", project));
+    .json(new ApiResponse(200, 'Project deleted successfully', project));
 });
 
 // stats
@@ -143,7 +144,7 @@ export const getProjectsDeadlineStats = asyncHandler(async (req, res, next) => {
           $round: [
             {
               $divide: [
-                { $subtract: ["$dueDate", "$startDate"] },
+                { $subtract: ['$dueDate', '$startDate'] },
                 1000 * 60 * 60 * 24,
               ],
             },
@@ -154,7 +155,7 @@ export const getProjectsDeadlineStats = asyncHandler(async (req, res, next) => {
           $round: [
             {
               $divide: [
-                { $subtract: ["$dueDate", new Date()] },
+                { $subtract: ['$dueDate', new Date()] },
                 1000 * 60 * 60 * 24,
               ],
             },
@@ -167,19 +168,19 @@ export const getProjectsDeadlineStats = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, "Projects fetched successfully", stats));
+    .json(new ApiResponse(200, 'Projects fetched successfully', stats));
 });
 
 export const getUserProjectDetails = asyncHandler(async (req, res, next) => {
   const userId = req.user._id;
 
   // Find projects owned by the user
-  const projects = await Project.find({ owner: userId }).populate("owner");
+  const projects = await Project.find({ owner: userId }).populate('owner');
 
   const projectDetails = await Promise.all(
     projects.map(async (project) => {
       const members = await Member.find({ project: project._id }).populate(
-        "member"
+        'member'
       );
       const totalDays = Math.ceil(
         (project.dueDate - project.startDate) / (1000 * 60 * 60 * 24)
@@ -189,6 +190,7 @@ export const getUserProjectDetails = asyncHandler(async (req, res, next) => {
       );
 
       return {
+        _id: project._id,
         name: project.name,
         startDate: project.startDate,
         dueDate: project.dueDate,
@@ -208,6 +210,6 @@ export const getUserProjectDetails = asyncHandler(async (req, res, next) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, "Projects fetched successfully", projectDetails)
+      new ApiResponse(200, 'Projects fetched successfully', projectDetails)
     );
 });
