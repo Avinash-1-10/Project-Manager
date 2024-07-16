@@ -5,11 +5,13 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Link, useNavigate } from 'react-router-dom';
 import Modal from './Modal';
 import useModal from '../hooks/useModal';
+import axios from 'axios';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ProjectCard = ({ project }) => {
-  const { name, startDate, dueDate, totalDays, remainingDays } = project;
+  const { name, startDate, dueDate, totalDays, remainingDays, _id } = project;
   const { isVisible, showModal, hideModal } = useModal();
   const navigate = useNavigate();
 
@@ -38,6 +40,17 @@ const ProjectCard = ({ project }) => {
   const handleEdit = () => {
     navigate(`/project/edit/${project._id}`);
   };
+
+  const handleDelete = async()=>{
+    console.log(BACKEND_URL)
+    try {
+      const {data} = await axios.delete(`${BACKEND_URL}/projects/${_id}`);
+      console.log(data)
+      navigate("/")
+    } catch (error) {
+      
+    }
+  }
 
   return (
     <>
@@ -83,8 +96,15 @@ const ProjectCard = ({ project }) => {
         </Link>
       </div>
       <Modal isVisible={isVisible} hideModal={hideModal}>
-        <h2 className='text-xl font-bold'>Hello, Daisy UI!</h2>
-        <p>This is a modal using Daisy UI and React.</p>
+        <div className='p-2'>
+        <p className='text-lg font-semibold mb-6'>
+          Are you sure you want to delete this project?
+        </p>
+        <div className='flex justify-end space-x-4'>
+          <button className='btn btn-ghost'>Cancel</button>
+          <button className='btn btn-error' onClick={handleDelete}>Delete</button>
+        </div>
+        </div>
       </Modal>
     </>
   );

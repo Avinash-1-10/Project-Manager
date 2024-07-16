@@ -3,7 +3,7 @@ import { configDotenv } from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-import cookieParser from "cookie-parser";  // Corrected this line
+import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import errorHandler from "./middlewares/errorHandler.js";
@@ -19,7 +19,7 @@ const port = process.env.PORT || 4000;
 // Middleware
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
-app.use(cookieParser());  // Corrected this line
+app.use(cookieParser());
 app.use(helmet());
 app.use(morgan("dev"));
 

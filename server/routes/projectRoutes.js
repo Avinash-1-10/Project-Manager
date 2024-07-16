@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createProject,
+  deleteProject,
   getProjectById,
   getProjects,
   getProjectsDeadlineStats,
@@ -17,5 +18,6 @@ router.get("/:id", authMiddleware, getProjectById)
 router.put("/:id", authMiddleware, updateProject);
 router.get("/stats/deadline", authMiddleware, getProjectsDeadlineStats);
 router.get("/stats/details", authMiddleware, getUserProjectDetails);
+router.delete("/:id", authMiddleware, deleteProject);
 
 export default router;
