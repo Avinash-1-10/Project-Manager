@@ -6,6 +6,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import Modal from './Modal';
 import useModal from '../hooks/useModal';
 import axios from 'axios';
+import useToast from '../hooks/useToast';
+import ToastContainer from './ToastContainer';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -14,6 +16,7 @@ const ProjectCard = ({ project }) => {
   const { name, startDate, dueDate, totalDays, remainingDays, _id } = project;
   const { isVisible, showModal, hideModal } = useModal();
   const navigate = useNavigate();
+  const { toasts, addToast, removeToast } = useToast();
 
   // Calculate remaining days ensuring it doesn't exceed total days
   const validRemainingDays =
@@ -41,16 +44,16 @@ const ProjectCard = ({ project }) => {
     navigate(`/project/edit/${project._id}`);
   };
 
-  const handleDelete = async()=>{
-    console.log(BACKEND_URL)
+  const handleDelete = async () => {
+    console.log(BACKEND_URL);
     try {
-      const {data} = await axios.delete(`${BACKEND_URL}/projects/${_id}`);
-      console.log(data)
-      navigate("/")
-    } catch (error) {
-      
-    }
-  }
+      const { data } = await axios.delete(`${BACKEND_URL}/projects/${_id}`);
+      addToast(data.message, 'success');
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
+    } catch (error) {}
+  };
 
   return (
     <>
@@ -97,15 +100,20 @@ const ProjectCard = ({ project }) => {
       </div>
       <Modal isVisible={isVisible} hideModal={hideModal}>
         <div className='p-2'>
-        <p className='text-lg font-semibold mb-6'>
-          Are you sure you want to delete this project?
-        </p>
-        <div className='flex justify-end space-x-4'>
-          <button className='btn btn-ghost'>Cancel</button>
-          <button className='btn btn-error' onClick={handleDelete}>Delete</button>
-        </div>
+          <p className='text-lg font-semibold mb-6'>
+            Are you sure you want to delete this project?
+          </p>
+          <div className='flex justify-end space-x-4'>
+            <button className='btn btn-ghost' onClick={hideModal}>
+              Cancel
+            </button>
+            <button className='btn btn-error' onClick={handleDelete}>
+              Delete
+            </button>
+          </div>
         </div>
       </Modal>
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </>
   );
 };
